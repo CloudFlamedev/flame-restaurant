@@ -23,10 +23,7 @@ pipeline {
         stage('Run Containers') {
             steps {
                 sh '''
-                whoami
-                docker --version
-                docker compose version
-                which docker
+                    docker-compose up -d
                 '''
             }
         }
