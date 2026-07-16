@@ -22,7 +22,12 @@ pipeline {
 
         stage('Run Containers') {
             steps {
-                sh 'docker compose up -d'
+                sh '''
+                whoami
+                docker --version
+                docker compose version
+                which docker
+                '''
             }
         }
     }
