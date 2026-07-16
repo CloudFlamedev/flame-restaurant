@@ -1,0 +1,33 @@
+services:
+  backend:
+    build: ./backend
+    container_name: flame-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/flame.db
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-change-me}
+    volumes:
+      - backend_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build: ./frontend
+    container_name: flame-frontend
+    ports:
+      - "8080:80"
+    environment:
+      - BACKEND_URL=http://localhost:8000/api
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  backend_data:
