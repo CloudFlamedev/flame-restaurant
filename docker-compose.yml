@@ -21,7 +21,7 @@ services:
     build: ./frontend
     container_name: flame-frontend
     ports:
-      - "3000:80"
+      - "3001:80"
     environment:
       - BACKEND_URL=http://localhost:8000/api
     depends_on:
