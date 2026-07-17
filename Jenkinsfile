@@ -6,7 +6,7 @@ pipeline {
         BACKEND_IMAGE = "utkrist/flame-backend"
         FRONTEND_IMAGE = "utkrist/flame-frontend"
     }
-    
+
     stages {
 
         stage('Checkout') {
@@ -29,14 +29,18 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    ${tool 'SonarScanner'}/bin/sonar-scanner \
-                    -Dsonar.projectKey=flame-restaurant \
-                    -Dsonar.projectName=flame-restaurant \
-                    -Dsonar.sources=. \
-                    -Dsonar.exclusions=**/node_modules/**,**/.git/**
-                    '''
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                        "${scannerHome}/bin/sonar-scanner" \
+                        -Dsonar.projectKey=flame-restaurant \
+                        -Dsonar.projectName=flame-restaurant \
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=**/node_modules/**,**/.git/**
+                        """
+                    }
                 }
             }
         }
