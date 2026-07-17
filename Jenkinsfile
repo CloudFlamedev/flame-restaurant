@@ -6,11 +6,7 @@ pipeline {
         BACKEND_IMAGE = "utkrist/flame-backend"
         FRONTEND_IMAGE = "utkrist/flame-frontend"
     }
-
-    tools {
-        sonarQube 'SonarScanner'
-    }
-
+    
     stages {
 
         stage('Checkout') {
