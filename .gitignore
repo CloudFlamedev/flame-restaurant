@@ -24,3 +24,11 @@ Thumbs.db
 *.log
 
 start-up_script.sh
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+
+*.tfstate
+*.tfstate.*
+crash.log

@@ -2,7 +2,11 @@ variable "aws_region" {
   default = "ap-south-1"
 }
 
-variable "instance_type" {
+variable "ci_instance_type" {
+  default = "t3.micro"
+}
+
+variable "app_instance_type" {
   default = "t2.micro"
 }
 
