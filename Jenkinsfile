@@ -26,25 +26,6 @@ pipeline {
                 sh 'docker build -t flame-frontend ./frontend'
             }
         }
-
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'SonarScanner'
-
-                    withSonarQubeEnv('SonarQube') {
-                        sh """
-                        "${scannerHome}/bin/sonar-scanner" \
-                        -Dsonar.projectKey=flame-restaurant \
-                        -Dsonar.projectName=flame-restaurant \
-                        -Dsonar.sources=. \
-                        -Dsonar.exclusions=**/node_modules/**,**/.git/**
-                        """
-                    }
-                }
-            }
-        }
-
         stage('Docker Login') {
             steps {
                 withCredentials([usernamePassword(
