@@ -1,106 +1,250 @@
 # 🔥 Flame Restaurant
 
-Full-stack food ordering app: vanilla HTML/CSS/JS frontend + FastAPI backend, built to be containerized and deployed cleanly.
+A full-stack restaurant ordering application built with **FastAPI** and **Vanilla HTML/CSS/JavaScript**, designed to demonstrate modern software development, containerization, infrastructure automation, and CI/CD practices.
 
-```
+---
+
+## 🌐 Live Demo
+
+**Frontend:** https://cloudflamedev.github.io/flame-frontend/
+
+---
+
+## 📂 Source Code
+
+- **Full Stack Project:** https://github.com/CloudFlamedev/flame-restaurant
+- **Frontend Repository:** https://github.com/CloudFlamedev/flame-frontend
+
+---
+
+# 🚀 Tech Stack
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript (ES6)
+
+### Backend
+- FastAPI
+- SQLAlchemy
+- Pydantic
+- JWT Authentication
+- SQLite
+
+### DevOps & Cloud
+- Docker
+- Docker Compose
+- Jenkins
+- Terraform
+- AWS EC2
+- GitHub Actions (Frontend Deployment)
+- GitHub Pages
+- Docker Hub
+- Git & GitHub
+
+---
+
+# 📁 Project Structure
+
+```text
 flame-restaurant/
-├── backend/            FastAPI app (SQLAlchemy, JWT auth, mock payments)
+│
+├── backend/
 │   ├── app/
-│   │   ├── routers/    auth, profile, categories, foods, cart, orders
-│   │   ├── models.py   SQLAlchemy models
-│   │   ├── schemas.py  Pydantic schemas
-│   │   └── main.py     App entrypoint + seed data + /api/health
+│   │   ├── routers/
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── database.py
+│   │   └── main.py
 │   ├── requirements.txt
 │   └── Dockerfile
-├── frontend/           Static HTML/CSS/JS, served by nginx in prod
-│   ├── index.html / css/style.css / js/app.js
+│
+├── frontend/
+│   ├── index.html
+│   ├── css/
+│   ├── js/
+│   ├── images/
 │   ├── nginx.conf
-│   ├── docker-entrypoint.sh   # injects BACKEND_URL at container start
+│   ├── docker-entrypoint.sh
 │   └── Dockerfile
+│
+├── terraform/
+│
 ├── docker-compose.yml
-└── .env.example
+├── Jenkinsfile
+└── README.md
 ```
 
-## Features
+---
 
-- **Menu**: categories + food items, search, seeded sample data
-- **Cart**: add/update/remove items, per-user, persisted server-side
-- **Auth**: JWT-based register/login, `/api/profile/me` for profile CRUD
-- **Checkout**: mock payment gateway (card / UPI / COD) — swap the block in
-  `backend/app/routers/orders.py` for a real Stripe/Razorpay integration later
-- **Orders**: order history per user
+# ✨ Features
 
-## Run locally (no Docker)
+- User Registration & Login (JWT Authentication)
+- Restaurant Menu
+- Food Categories
+- Food Search
+- Shopping Cart
+- Order Checkout
+- Mock Payment Gateway
+- User Profile
+- Order History
+- REST API Documentation
+- Dockerized Application
+
+---
+
+# ⚙️ Run Locally
+
+## Clone Repository
 
 ```bash
-# backend
-cd backend
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+git clone https://github.com/CloudFlamedev/flame-restaurant.git
 
-# frontend (separate terminal) — any static server works
+cd flame-restaurant
+```
+
+---
+
+## Backend
+
+```bash
+cd backend
+
+python -m venv .venv
+
+source .venv/bin/activate      # Linux / macOS
+
+pip install -r requirements.txt
+
+uvicorn app.main:app --reload --port 8000
+```
+
+---
+
+## Frontend
+
+Open another terminal.
+
+```bash
 cd frontend
+
 python -m http.server 8080
 ```
 
-Visit `http://localhost:8080`. API docs live at `http://localhost:8000/docs`.
+Visit
 
-## Run with Docker Compose
+```
+Frontend
+http://localhost:8080
+```
+
+API Docs
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+# 🐳 Run with Docker
 
 ```bash
 cp .env.example .env
+
 docker compose up --build
 ```
 
-- Frontend: http://localhost:8080
-- Backend: http://localhost:8000/docs
-- Both containers have `HEALTHCHECK`s wired in (used by Compose, Swarm, and K8s probes alike).
+Services
 
-## Deployment / DevOps roadmap
+| Service | URL |
+|----------|------------------------------|
+| Frontend | http://localhost:8080 |
+| Backend | http://localhost:8000/docs |
 
-This project is deliberately split into two independently deployable containers
-so it maps cleanly onto a real pipeline:
+---
 
-1. **Containerize** ✅ done — multi-stage-ready Dockerfiles, non-root backend user,
-   health endpoints (`/api/health`, `/health`) for liveness/readiness probes.
-2. **CI**: GitHub Actions workflow to lint, run `pytest` (add tests under `backend/tests/`),
-   build both images, and push to a registry (Docker Hub / GHCR / ECR) tagged by git SHA.
-3. **IaC**: Terraform modules for the target infra (e.g. EC2 + ALB, or ECS/EKS) —
-   reuse the VPC/SG/EC2 module pattern from your IaC generator project.
-4. **CD**: GitHub Actions + ArgoCD for GitOps-based Kubernetes rollout — this is the
-   natural next portfolio piece: package `backend/` and `frontend/` as Helm charts or
-   plain K8s manifests (Deployment + Service + Ingress + ConfigMap for `BACKEND_URL`),
-   commit manifest changes, let ArgoCD sync.
-5. **Config/secrets**: `SECRET_KEY` and `DATABASE_URL` are read from environment
-   variables — map these to a K8s Secret / ConfigMap, or SSM Parameter Store if on AWS.
-6. **Database**: swap SQLite for Postgres in production by just changing `DATABASE_URL`
-   (SQLAlchemy handles the rest) — good opportunity to add an RDS/Postgres Terraform module.
-7. **Observability**: `/api/health` is ready to wire into Prometheus blackbox exporter
-   or a Grafana uptime panel, consistent with your FinOps dashboard's Grafana setup.
+# ☁️ DevOps Architecture
 
-## API quick reference
+```
+Developer
+     │
+     ▼
+GitHub Repository
+     │
+     ▼
+Jenkins Pipeline
+     │
+     ├── Pull Source Code
+     ├── Build Docker Images
+     ├── Push Images to Docker Hub
+     └── Deploy to AWS EC2
+                    │
+                    ▼
+             Docker Containers
+```
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | – | Create account, returns JWT |
-| POST | `/api/auth/login` | – | Login (form: `username`, `password`), returns JWT |
-| GET | `/api/profile/me` | ✅ | Get profile |
-| PUT | `/api/profile/me` | ✅ | Update profile |
-| GET | `/api/profile/orders` | ✅ | Order history |
-| GET | `/api/categories/` | – | List categories |
-| GET | `/api/foods/?category_id=&search=` | – | List/filter foods |
-| GET | `/api/cart/` | ✅ | View cart |
-| POST | `/api/cart/` | ✅ | Add item `{food_id, quantity}` |
-| PUT | `/api/cart/{item_id}` | ✅ | Update quantity |
-| DELETE | `/api/cart/{item_id}` | ✅ | Remove item |
-| POST | `/api/orders/checkout` | ✅ | Place order `{payment_method}` |
+---
 
-## Notes
+# 🐳 Docker Hub Images
 
-- Default DB is SQLite for zero-setup local dev; the code path to Postgres is a
-  one-line `DATABASE_URL` change (see `backend/app/database.py`).
-- CORS is wide open (`allow_origins=["*"]`) for local development — restrict this
-  to your real frontend origin before going to production.
-- `SECRET_KEY` has an insecure default — **always** override it via environment
-  variable outside of local dev.
+- Frontend Image
+- Backend Image
+
+Docker images are published to Docker Hub and can be deployed independently.
+
+---
+
+# ☁️ Infrastructure as Code
+
+Terraform is used to provision AWS infrastructure including:
+
+- VPC
+- Public Subnet
+- Security Groups
+- EC2 Instance
+- Internet Gateway
+- Route Tables
+
+---
+
+# 🔄 CI/CD Pipeline
+
+The Jenkins pipeline automates:
+
+- Source Code Checkout
+- Docker Image Build
+- Docker Image Push
+- Application Deployment
+- Infrastructure Automation with Terraform
+
+---
+
+# 📖 API Reference
+
+| Method | Endpoint | Description |
+|---------|----------------------------|-----------------------------|
+| POST | /api/auth/register | Register User |
+| POST | /api/auth/login | Login User |
+| GET | /api/profile/me | User Profile |
+| PUT | /api/profile/me | Update Profile |
+| GET | /api/profile/orders | Order History |
+| GET | /api/categories | Food Categories |
+| GET | /api/foods | Food Menu |
+| GET | /api/cart | View Cart |
+| POST | /api/cart | Add to Cart |
+| PUT | /api/cart/{id} | Update Cart |
+| DELETE | /api/cart/{id} | Remove Item |
+| POST | /api/orders/checkout | Checkout |
+
+----
+
+# 👨‍💻 Author
+
+**Utkrist Gupta**
+
+- GitHub: https://github.com/CloudFlamedev
+- LinkedIn: https://www.linkedin.com/in/utkrist-gupta/
+
+---
+
+# ⭐ If you found this project helpful, please consider giving it a Star.
