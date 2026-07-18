@@ -7,7 +7,7 @@ variable "ci_instance_type" {
 }
 
 variable "app_instance_type" {
-  default = "t2.micro"
+  default = "t3.micro"
 }
 
 variable "ci_instance_name" {
