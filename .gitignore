@@ -22,3 +22,5 @@ Thumbs.db
 
 # Logs
 *.log
+
+start-up_script.sh
